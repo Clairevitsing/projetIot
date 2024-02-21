@@ -3,6 +3,7 @@ const recordBtn = document.querySelector(".record"),
   downloadBtn = document.querySelector(".download"),
   inputLanguage = document.querySelector("#language"),
   clearBtn = document.querySelector(".clear");
+  sendDataBtn = document.querySelector(".sendData");
 
 let SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition,
@@ -45,6 +46,7 @@ function speechToText() {
         document.querySelector(".interim").innerHTML = " " + speechResult;
       }
       downloadBtn.disabled = false;
+      sendDataBtn.disabled = false;
     };
     recognition.onspeechend = () => {
       speechToText();
@@ -91,6 +93,8 @@ function stopRecording() {
 function download() {
   const text = result.innerText;
   const filename = "speech.txt";
+  // const meetingTitle = document.querySelector("#meeting-title").value; 
+  // const filename = meetingTitle.trim() !== '' ? ${meetingTitle}.txt : "speech.txt";
 
   const element = document.createElement("a");
   element.setAttribute(
@@ -109,4 +113,35 @@ downloadBtn.addEventListener("click", download);
 clearBtn.addEventListener("click", () => {
   result.innerHTML = "";
   downloadBtn.disabled = true;
+});
+
+sendDataBtn.addEventListener("click", () => {
+  const date = document.getElementById("date").value;
+  const time = document.getElementById("time").value;
+  //ajouter le title
+  //const title = document.getElementById("meetingTitle").innerText;
+  const text = document.querySelector(".result").innerText;
+
+  // Créez un objet contenant les données à envoyer
+  const data = {
+    date: date,
+    time: time,
+    text: text,
+  };
+
+  // Effectuez une requête HTTP POST vers le point de terminaison API
+  fetch("http://localhost:4000/api/data", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.text())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error("Erreur lors de l'envoi des données:", error);
+    });
 });
