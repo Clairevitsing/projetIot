@@ -1,12 +1,14 @@
+// Importing required modules
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
 
+// Creating an instance of Express application
 const app = express();
 const port = 4000;
 
-// Configuration de la connexion à la base de données MySQL
+// Configuration for MySQL database connection
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -14,39 +16,59 @@ const connection = mysql.createConnection({
   database: "iot",
 });
 
+// Connecting to MySQL database
 connection.connect((err) => {
   if (err) {
-    console.error("Erreur de connexion à la base de données :", err);
+    console.error("Database connection error:", err);
     return;
   }
-  console.log("Connecté à la base de données MySQL");
+  console.log("Connected to MySQL database");
 });
 
-app.use(bodyParser.json());
-app.use(cors());
+// Middleware setup
+// Parse JSON bodies
+app.use(bodyParser.json()); 
+// Enable CORS
+app.use(cors()); 
 
+// Handling POST requests to insert data into the database
 app.post("/api/data", (req, res) => {
   const formData = req.body;
 
-  // Insérer les données dans la table de la base de données
+  // Inserting data into the agendaInfo table in the database
   const sql = "INSERT INTO agendaInfo (date, time, text) VALUES (?, ?, ?)";
   const values = [formData.date, formData.time, formData.text];
 
   connection.query(sql, values, (err, result) => {
     if (err) {
-      console.error("Erreur lors de l'insertion des données :", err);
-      res
-        .status(500)
-        .send("Erreur lors de l'insertion des données dans la base de données");
+      console.error("Error while inserting data:", err);
+      res.status(500).send("Error while inserting data into the database");
       return;
     }
-    console.log("Données insérées avec succès dans la base de données");
-    res
-      .status(200)
-      .send("Données insérées avec succès dans la base de données");
+    console.log("Data inserted successfully into the database");
+    res.status(200).send("Data inserted successfully into the database");
   });
 });
 
+// Handling GET requests to retrieve data from the database
+app.get("/api/data", (req, res) => {
+  console.log("GET request received on /api/data");
+  // Selecting all data from the agendaInfo table
+  const sql = "SELECT * FROM agendaInfo";
+  console.log("Executing SQL query to retrieve data");
+
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error while retrieving data:", err);
+      res.status(500).send("Error while retrieving data from the database");
+      return;
+    }
+    console.log("Data retrieved successfully from the database");
+    res.status(200).json(results);
+  });
+});
+
+// Starting the server
 app.listen(port, () => {
-  console.log(`Serveur démarré sur http://localhost:${port}`);
+  console.log(`Server started at http://localhost:${port}`);
 });

@@ -3,7 +3,7 @@ const recordBtn = document.querySelector(".record"),
   downloadBtn = document.querySelector(".download"),
   inputLanguage = document.querySelector("#language"),
   clearBtn = document.querySelector(".clear");
-  sendDataBtn = document.querySelector(".sendData");
+sendDataBtn = document.querySelector(".sendData");
 
 let SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition,
@@ -93,7 +93,7 @@ function stopRecording() {
 function download() {
   const text = result.innerText;
   const filename = "speech.txt";
-  // const meetingTitle = document.querySelector("#meeting-title").value; 
+  // const meetingTitle = document.querySelector("#meeting-title").value;
   // const filename = meetingTitle.trim() !== '' ? ${meetingTitle}.txt : "speech.txt";
 
   const element = document.createElement("a");
