@@ -27,17 +27,26 @@ connection.connect((err) => {
 
 // Middleware setup
 // Parse JSON bodies
-app.use(bodyParser.json()); 
+app.use(bodyParser.json());
 // Enable CORS
-app.use(cors()); 
+app.use(cors());
 
 // Handling POST requests to insert data into the database
 app.post("/api/data", (req, res) => {
   const formData = req.body;
 
   // Inserting data into the agendaInfo table in the database
-  const sql = "INSERT INTO agendaInfo (date, time, text) VALUES (?, ?, ?)";
-  const values = [formData.date, formData.time, formData.text];
+  const sql =
+    "INSERT INTO agendaInfo (startDate, startTime, endDate, endTime, meetingTitle, text) VALUES (?, ?, ?, ?, ?,?)";
+  //2 add EndDateAndTime fields
+  const values = [
+    formData.startDate,
+    formData.startTime,
+    formData.endDate,
+    formData.endTime,
+    formData.meetTitle,
+    formData.text,
+  ];
 
   connection.query(sql, values, (err, result) => {
     if (err) {

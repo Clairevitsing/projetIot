@@ -90,16 +90,25 @@ function stopRecording() {
   recording = false;
 }
 
+
 function download() {
+  const startDate = document.getElementById("startDate").value;
+  const startTime = document.getElementById("startTime").value;
+  const endDate = document.getElementById("endDate").value;
+  const endTime = document.getElementById("endTime").value;
+  const meetingTitle = document.getElementById("meetingTitle").value;
   const text = result.innerText;
-  const filename = "speech.txt";
-  // const meetingTitle = document.querySelector("#meeting-title").value;
-  // const filename = meetingTitle.trim() !== '' ? ${meetingTitle}.txt : "speech.txt";
+  // const filename = "speech.txt";
+
+  // Concatenate the information into a text string
+  const fileInfo = `Meeting Title: ${meetingTitle}\nStart Date: ${startDate}\nStart Time: ${startTime}\nEnd Date: ${endDate}\nEnd Time: ${endTime}\n\n${text}`;
+
+  const filename = `${meetingTitle.replace(/ /g, "_").toLowerCase()}.txt`;
 
   const element = document.createElement("a");
   element.setAttribute(
     "href",
-    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+    "data:text/plain;charset=utf-8," + encodeURIComponent(fileInfo)
   );
   element.setAttribute("download", filename);
   element.style.display = "none";
@@ -107,6 +116,7 @@ function download() {
   element.click();
   document.body.removeChild(element);
 }
+
 
 downloadBtn.addEventListener("click", download);
 
@@ -116,16 +126,21 @@ clearBtn.addEventListener("click", () => {
 });
 
 sendDataBtn.addEventListener("click", () => {
-  const date = document.getElementById("date").value;
-  const time = document.getElementById("time").value;
+  const startDate = document.getElementById("startDate").value;
+  const startTime = document.getElementById("startTime").value;
+  const endDate = document.getElementById("endDate").value;
+  const endTime = document.getElementById("endTime").value;
   //ajouter le title
-  //const title = document.getElementById("meetingTitle").innerText;
+  const meetingTitle = document.getElementById("meetingTitle").value;
   const text = document.querySelector(".result").innerText;
 
   // Créez un objet contenant les données à envoyer
   const data = {
-    date: date,
-    time: time,
+    startDate: startDate,
+    startTime: startTime,
+    endDate: endDate,
+    endTime: endTime,
+    meetingTitle: meetingTitle,
     text: text,
   };
 
